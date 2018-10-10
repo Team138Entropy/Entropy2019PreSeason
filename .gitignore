@@ -1,0 +1,42 @@
+# Thanks to: https://www.chiefdelphi.com/forums/showthread.php?t=158513
+# and https://github.com/Open-RIO/.gitignore/blob/master/.gitignore
+# WPILib
+bin/
+build/
+dist/
+sysProps.xml
+workbench.xmi
+
+# IDE
+*.ipr
+*.iml
+*.iws
+out/
+tmp/
+.settings/
+.loadpath
+.project
+/.idea
+.classpath
+
+# Toast/GradleRIO
+run/
+.gradle/
+gradle/.launch/
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.AppleDouble
+.LSOverride
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# backup files
+*~
+
+# directory for XML generated after running junit tests through ant
+junit/
