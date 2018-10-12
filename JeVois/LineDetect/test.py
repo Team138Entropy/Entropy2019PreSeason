@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-'''
-Simple "Square Detector" program.
+# params
+doOtsu = False
+doGuassianBeforeThreshold = True
+doGuassianAfterThreshold = True
+guassianAmount = 21
 
-Loads several images sequentially and tries to find squares in each image.
-'''
 
 # Python 2/3 compatibility
 import sys
@@ -22,8 +23,6 @@ def angle_cos(p0, p1, p2):
     return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
 
 def find_squares(img):
-    img = cv.GaussianBlur(img, (5, 5), 0)
-    #img = cv.threshold(img, 127, 255, cv.THRESH_BINARY)
     squares = []
     for gray in cv.split(img):
         for thrs in xrange(0, 255, 26):
@@ -41,10 +40,33 @@ def find_squares(img):
                     max_cos = np.max([angle_cos(cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in xrange(4)])
                     if max_cos < 0.1 or True:
                         squares.append(cnt)
+    for square in squares:
+        print(square, cv.contourArea(cnt))
     return squares
 
 if __name__ == '__main__':
     img = cv.imread("test.png")
+    # convert to B&W
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    img = cv.cvtColor(img, cv.COLOR_GRAY2RGB)
+    if doGuassianBeforeThreshold:
+        # Guassian blur
+        img = cv.GaussianBlur(img, (guassianAmount, guassianAmount), 0)
+
+    # threshold color
+    # strict threshold
+    img = cv.threshold(img, 175, 255, cv.THRESH_TOZERO)[1]
+    add = 0
+    if doOtsu:
+        add = cv.THRESH_OTSU
+    # Otsu's thresholding
+    # see https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
+    img = cv.threshold(img, 127, 255, cv.THRESH_BINARY+add)[1]
+
+    if doGuassianAfterThreshold:
+        # Guassian blur
+        img = cv.GaussianBlur(img, (guassianAmount, guassianAmount), 0)
+
     squares = find_squares(img)
     cv.drawContours( img, squares, -1, (0, 255, 0), 3 )
     cv.imshow('squares', img)
