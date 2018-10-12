@@ -1,12 +1,5 @@
 #!/usr/bin/env python
 
-# params
-doOtsu = False
-doGuassianBeforeThreshold = True
-doGuassianAfterThreshold = True
-guassianAmount = 21
-
-
 # Python 2/3 compatibility
 import sys
 PY3 = sys.version_info[0] == 3
@@ -17,6 +10,14 @@ if PY3:
 import numpy as np
 import cv2 as cv
 
+
+# params
+doOtsu = False
+doGuassianBeforeThreshold = True
+doGuassianAfterThreshold = True
+guassianAmount = 21
+mode = cv.RETR_LIST
+method = cv.CHAIN_APPROX_SIMPLE
 
 def angle_cos(p0, p1, p2):
     d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
@@ -31,7 +32,7 @@ def find_squares(img):
                 bin = cv.dilate(bin, None)
             else:
                 _retval, bin = cv.threshold(gray, thrs, 255, cv.THRESH_BINARY)
-            bin, contours, _hierarchy = cv.findContours(bin, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+            bin, contours, _hierarchy = cv.findContours(bin, mode, method)
             for cnt in contours:
                 cnt_len = cv.arcLength(cnt, True)
                 cnt = cv.approxPolyDP(cnt, 0.02*cnt_len, True)
