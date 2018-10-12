@@ -56,16 +56,20 @@ if __name__ == '__main__':
     # threshold color
     # strict threshold
     img = cv.threshold(img, 175, 255, cv.THRESH_TOZERO)[1]
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+
     add = 0
     if doOtsu:
         add = cv.THRESH_OTSU
     # Otsu's thresholding
     # see https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
-    img = cv.threshold(img, 127, 255, cv.THRESH_BINARY+add)[1]
+    img = cv.threshold(img, 127, 255, cv.THRESH_BINARY + add)[1]
 
     if doGuassianAfterThreshold:
         # Guassian blur
         img = cv.GaussianBlur(img, (guassianAmount, guassianAmount), 0)
+
+    img = cv.cvtColor(img, cv.COLOR_GRAY2RGB)
 
     squares = find_squares(img)
     cv.drawContours( img, squares, -1, (0, 255, 0), 3 )
