@@ -25,43 +25,38 @@ def detectShape(c):
 
 
 def process(inImg):
-    resized = cv2.resize(inImg, (300, inImg.shape[0]))
-    ratio = inImg.shape[0] / float(resized.shape[0])
     # convert to B&W
-    # afterImg = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+    afterImg = cv2.cvtColor(inImg, cv2.COLOR_BGR2GRAY)
     # threshold color
-    # thresh = cv2.threshold(afterImg, 127, 255, cv2.THRESH_BINARY)
+    thresh = cv2.threshold(afterImg, 127, 255, cv2.THRESH_BINARY)
     # threshold returns extra data. remove that
-    # afterImg = thresh[1]
+    afterImg = thresh[1]
 
-    gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
+    t = cv2.threshold(afterImg, 127, 255, 1)
+    # ret = t[0]
+    thresh = t[1]
 
-    # find contours in the thresholded image and initialize the
-    # shape detector
-    contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    contours = contours[0] if is_cv2 else contours[1]
-    sd = ShapeDetector()
-    # loop over the contours
-    for c in contours:
-        # compute the center of the contour, then detect the name of the
-        # shape using only the contour
-        M = cv2.moments(c)
-        print(M)
-        if M["m00"] == 0:
-            print("Division by 0!")
-        else:
-            cX = int((M["m10"] / M["m00"]) * ratio)
-            cY = int((M["m01"] / M["m00"]) * ratio)
-            shape = sd.detect(c)
+    t = cv2.findContours(thresh, 1, 2)
+    contours = t[1]
+    # h = t[1]
 
-            # multiply the contour (x, y)-coordinates by the resize ratio,
-            # then draw the contours and the name of the shape on the image
-            c = c.astype("float")
-            c *= ratio
-            c = c.astype("int")
-            cv2.drawContours(inImg, [c], -1, (0, 255, 0), 2)
-            cv2.putText(inImg, shape, (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+    for cnt in contours:
+        approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
+        print len(approx)
+        if len(approx) == 5:
+            print "pentagon"
+            cv2.drawContours(afterImg, [cnt], 0, 255, -1)
+        elif len(approx) == 3:
+            print "triangle"
+            cv2.drawContours(afterImg, [cnt], 0, (0, 255, 0), -1)
+        elif len(approx) == 4:
+            print "square"
+            cv2.drawContours(afterImg, [cnt], 0, (0, 0, 255), -1)
+        elif len(approx) == 9:
+            print "half-circle"
+            cv2.drawContours(afterImg, [cnt], 0, (255, 255, 0), -1)
+        elif len(approx) > 15:
+            print "circle"
+            cv2.drawContours(afterImg, [cnt], 0, (0, 255, 255), -1)
 
     return afterImg
