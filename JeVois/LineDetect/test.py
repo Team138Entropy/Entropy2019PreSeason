@@ -16,6 +16,8 @@ doOtsu = False
 doGuassianBeforeThreshold = True
 doGuassianAfterThreshold = True
 guassianAmount = 21
+
+# see https://docs.opencv.org/2.4/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html?highlight=findcontours#findcontours
 mode = cv.RETR_LIST
 method = cv.CHAIN_APPROX_SIMPLE
 
