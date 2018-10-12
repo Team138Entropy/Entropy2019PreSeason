@@ -3,6 +3,6 @@
 import cv2
 from maincode import process
 
-img = cv2.imread("test2.png")
+img = cv2.imread("test.png")
 afterImg = process(img)
 cv2.imwrite("out.png", afterImg)
