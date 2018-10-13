@@ -7,7 +7,7 @@ from maincode import process
 #
 # @author Max H
 #
-# @videomapping YUYV 1280 1024 30 YUYV 1280 1024 15 MaxH LineDetect
+# @videomapping YUYV 1280 1024 7.5 YUYV 1280 1024 7.5 MaxH LineDetect
 # @email
 # @address 123 first street, Los Angeles CA 90012, USA
 # @copyright Copyright (C) 2018 by Max H
