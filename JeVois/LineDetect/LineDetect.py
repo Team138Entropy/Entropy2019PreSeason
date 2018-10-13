@@ -99,7 +99,7 @@ class LineDetect:
         outframe.sendCv(outimg)
 
         # Example of sending some serial output message:
-        jevois.sendSerial("DONE frame {}".format(self.frame));
+        jevois.sendSerial("DONE frame {}".format(self.frame))
         self.frame += 1
 
     # ###################################################################################################

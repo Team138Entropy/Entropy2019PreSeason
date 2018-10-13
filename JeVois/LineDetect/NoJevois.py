@@ -8,6 +8,6 @@ afterImg = process(img)
 cv2.imwrite("out.png", afterImg)
 try:
     cv2.imshow('squares', afterImg)
-    cv2.waitKey();
+    cv2.waitKey()
 except Exception as e:
     pass
