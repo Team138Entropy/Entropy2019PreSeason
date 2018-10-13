@@ -47,7 +47,7 @@ def find_squares(img):
         print(square, cv.contourArea(cnt))
     return squares
 
-def procImg(img):
+def process(img):
     # convert to B&W
     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     img = cv.cvtColor(img, cv.COLOR_GRAY2RGB)
@@ -79,7 +79,7 @@ def procImg(img):
 
 if __name__ == '__main__':
     img = cv.imread("test.png")
-    img = procImg(img)
+    img = process(img)
     cv.imshow('squares', img)
     cv.imwrite("out.png", img)
     cv.waitKey();
