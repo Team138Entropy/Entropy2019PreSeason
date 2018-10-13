@@ -1,76 +1,85 @@
-# This file does the actual image processing.
-import cv2
-from ShapeDetector import ShapeDetector
+#!/usr/bin/env python
 
-ratio = 1
-is_cv2 = True
+# Python 2/3 compatibility
+import sys
+PY3 = sys.version_info[0] == 3
 
-def replaceBlackWithTransparent(src, bAndW):
-    img,alpha = cv2.threshold(bAndW,0,255,cv2.THRESH_BINARY)
-    t = cv2.split(src)
-    b, g, r = t
-    rgba = [b,g,r, alpha]
-    dst = cv2.merge(rgba,4)
-    return dst
+if PY3:
+    xrange = range
 
-def detectShape(c):
-    shape = "unidentified"
-    peri = cv2.arcLength(c, True)
-    approx = cv2.approxPolyDP(c, 0.04 * peri, True)
-
-    if len(approx) == 4:
-        # compute the bounding box of the contour and use the
-        # bounding box to compute the aspect ratio
-        r = cv2.boundingRect(approx)
-        x = r[0]
-        y = r[1]
-        w = r[2]
-        h = r[3]
-        ar = w / float(h)
-
-        # a square will have an aspect ratio that is approximately
-        # equal to one, otherwise, the shape is a rectangle
-        shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
-
-    return shape
+import numpy as np
+import cv2 as cv
 
 
-def process(inImg):
-    copy = inImg.copy()
+# params
+doOtsu = False
+doGuassianBeforeThreshold = True
+doGuassianAfterThreshold = True
+guassianAmount = 21
+
+# see https://docs.opencv.org/2.4/modules/imgproc/doc/structural_analysis_and_shape_descriptors.html?highlight=findcontours#findcontours
+mode = cv.RETR_LIST
+method = cv.CHAIN_APPROX_SIMPLE
+
+def angle_cos(p0, p1, p2):
+    d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
+    return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
+
+def find_squares(img):
+    squares = []
+    for gray in cv.split(img):
+        for thrs in xrange(0, 255, 26):
+            if thrs == 0:
+                bin = cv.Canny(gray, 0, 50, apertureSize=5)
+                bin = cv.dilate(bin, None)
+            else:
+                _retval, bin = cv.threshold(gray, thrs, 255, cv.THRESH_BINARY)
+            bin, contours, _hierarchy = cv.findContours(bin, mode, method)
+            for cnt in contours:
+                cnt_len = cv.arcLength(cnt, True)
+                cnt = cv.approxPolyDP(cnt, 0.02*cnt_len, True)
+                if len(cnt) == 4 and cv.contourArea(cnt) > 1000 and cv.isContourConvex(cnt):
+                    cnt = cnt.reshape(-1, 2)
+                    max_cos = np.max([angle_cos(cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in xrange(4)])
+                    if max_cos < 0.1 or True:
+                        squares.append(cnt)
+    for square in squares:
+        print(square, cv.contourArea(cnt))
+    return squares
+
+def procImg(img):
     # convert to B&W
-    afterImg = cv2.cvtColor(inImg, cv2.COLOR_BGR2GRAY)
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    img = cv.cvtColor(img, cv.COLOR_GRAY2RGB)
+    if doGuassianBeforeThreshold:
+        # Guassian blur
+        img = cv.GaussianBlur(img, (guassianAmount, guassianAmount), 0)
+
     # threshold color
-    thresh = cv2.threshold(afterImg, 127, 255, cv2.THRESH_BINARY)
-    # threshold returns extra data. remove that
-    afterImg = thresh[1]
-    afterImg = replaceBlackWithTransparent(copy, inImg)
-    # cv2.imwrite("partial.png", afterImg)
+    # strict threshold
+    img = cv.threshold(img, 175, 255, cv.THRESH_TOZERO)[1]
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
-    t = cv2.threshold(afterImg, 127, 255, 1)
-    # ret = t[0]
-    thresh = t[1]
+    add = 0
+    if doOtsu:
+        add = cv.THRESH_OTSU
+    # Otsu's thresholding
+    # see https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
+    img = cv.threshold(img, 127, 255, cv.THRESH_BINARY + add)[1]
 
-    t = cv2.findContours(thresh, 1, cv2.RETR_FLOODFILL)
-    contours = t[1]
-    # h = t[1]
+    if doGuassianAfterThreshold:
+        # Guassian blur
+        img = cv.GaussianBlur(img, (guassianAmount, guassianAmount), 0)
 
-    for cnt in contours:
-        approx = cv2.approxPolyDP(cnt, 0.01 * cv2.arcLength(cnt, True), True)
-        print(len(approx))
-        if len(approx) == 5:
-            print("pentagon")
-            cv2.drawContours(afterImg, [cnt], 0, 255, -1)
-        elif len(approx) == 3:
-            print("triangle")
-            cv2.drawContours(afterImg, [cnt], 0, (0, 255, 0), -1)
-        elif len(approx) == 4:
-            print("square")
-            cv2.drawContours(afterImg, [cnt], 0, (0, 0, 255), -1)
-        elif len(approx) == 9:
-            print("half-circle")
-            cv2.drawContours(afterImg, [cnt], 0, (255, 255, 0), -1)
-        elif len(approx) > 15:
-            print("circle")
-            cv2.drawContours(afterImg, [cnt], 0, (0, 255, 255), -1)
+    img = cv.cvtColor(img, cv.COLOR_GRAY2RGB)
 
-    return afterImg
+    squares = find_squares(img)
+    cv.drawContours( img, squares, -1, (0, 255, 0), 3 )
+    return img
+
+if __name__ == '__main__':
+    img = cv.imread("test.png")
+    img = procImg(img)
+    cv.imshow('squares', img)
+    cv.imwrite("out.png", img)
+    cv.waitKey();
