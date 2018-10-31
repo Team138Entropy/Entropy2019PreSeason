@@ -116,6 +116,8 @@ class DeepFrier:
         width = outimg.shape[1]
         cv2.putText(outimg, fps, (3, height - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255))
 
+        outimg = cv2.cvtColor(outimg, cv2.COLOR_BGR2RGB)
+
         # Convert our output image to video output format and send to host over USB:
         outframe.sendCv(outimg)
 
