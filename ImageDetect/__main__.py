@@ -1,12 +1,13 @@
 from __future__ import division
 import cv2
+import sys
 import numpy as np
 
 def nothing(*arg):
     pass
- 
+
 # Initial HSV GUI slider values to load on program start.
-icol = (36, 202, 59, 71, 255, 255)    # Green
+icol = (27, 101, 5, 40, 249, 255)    # Green
 #icol = (18, 0, 196, 36, 255, 255)  # Yellow
 #icol = (89, 0, 0, 125, 255, 255)  # Blue
 #icol = (0, 100, 80, 10, 255, 255)   # Red
