@@ -2,10 +2,12 @@ from __future__ import division
 import cv2
 import sys
 import numpy as np
+import imutils
 
 def nothing(*arg):
     pass
 
+blurVal = 13
 # Initial HSV GUI slider values to load on program start.
 icol = (27, 101, 5, 40, 249, 255)    # Green
 #icol = (18, 0, 196, 36, 255, 255)  # Yellow
@@ -39,8 +41,8 @@ while True:
     cv2.imshow('frame', frame)
     
     # Blur methods available, comment or uncomment to try different blur methods.
-    frameBGR = cv2.GaussianBlur(frame, (7, 7), 0)
-    #frameBGR = cv2.medianBlur(frameBGR, 7)
+    frameBGR = cv2.GaussianBlur(frame, (blurVal, blurVal), 0)
+    frameBGR = cv2.medianBlur(frameBGR, blurVal)
     #frameBGR = cv2.bilateralFilter(frameBGR, 15 ,75, 75)
     """kernal = np.ones((15, 15), np.float32)/255
     frameBGR = cv2.filter2D(frameBGR, -1, kernal)"""
@@ -71,6 +73,31 @@ while True:
  
     # Show final output image
     cv2.imshow('colorTest', result)
+
+    gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+    gray = cv2.bilateralFilter(gray, 11, 17, 17)
+    edged = cv2.Canny(gray, 30, 200)
+
+    cnts = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
+    cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
+    screenCnt = None
+
+    for c in cnts:
+        # approximate the contour
+        peri = cv2.arcLength(c, True)
+        approx = cv2.approxPolyDP(c, 0.015 * peri, True)
+    
+        # if our approximated contour has four points, then
+        if len(approx) == 4:
+            screenCnt = approx
+            break
+    
+    cv2.drawContours(result, [screenCnt], -1, (0, 255, 0), 3)
+    cv2.imshow("contours", result)
+
+    cv2.imshow('gray', gray)
+    #cv2.imshow('contours', res#)
 	
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
