@@ -36,8 +36,8 @@ public class CheesyDrive {
     public DriveSignal cheesyDrive(double throttle, double wheel, boolean isQuickTurn,
                                    boolean isHighGear) {
 
-        wheel = handleDeadband(wheel, kWheelDeadband);
-        throttle = handleDeadband(throttle, kThrottleDeadband);
+        //wheel = handleDeadband(wheel, kWheelDeadband);
+        //throttle = handleDeadband(throttle, kThrottleDeadband);
 
         double negInertia = wheel - mOldWheel;
         mOldWheel = wheel;

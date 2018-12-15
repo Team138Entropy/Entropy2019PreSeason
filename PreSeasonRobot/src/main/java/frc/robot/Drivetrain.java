@@ -1,8 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team138.robot.commands.TeleopDrive;
-import org.usfirst.frc.team138.robot.Utility;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.Utility;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -10,9 +10,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team138.robot.RobotMap;
-import org.usfirst.frc.team138.robot.Constants;
-import org.usfirst.frc.team138.robot.Robot;
+import frc.robot.RobotMap;
+import frc.robot.Constants;
+import frc.robot.Robot;
 
 
 public class Drivetrain extends Subsystem{
@@ -100,15 +100,25 @@ public class Drivetrain extends Subsystem{
 
 	public void drive(double moveSpeed, double rotateSpeed)
 	{
-			Robot.drivetrain.driveCloseLoopControl(moveSpeed, rotateSpeed);
-	}
+        Robot.drivetrain.driveCloseLoopControl(moveSpeed, rotateSpeed);
+    }
+    
+    public void drive(DriveSignal signal)
+    {
+        driveCheezy(signal);
+    }
+
+    public void driveCheezy(DriveSignal signal) {
+        frontLeftTalon.set(ControlMode.Velocity, signal.getLeft());
+		frontRightTalon.set(ControlMode.Velocity, signal.getRight());
+    }
 
 	public void driveCloseLoopControl(double moveSpeed, double rotateSpeed)
 	{
 		/*
 		 * moveSpeed and rotateSpeed in Meters/second.
 		 */
-		double left  = 0;
+		double left  = 0;   
 		double right = 0;
 		/*
 		 * Robot motors move opposite to joystick and autonomous directions
