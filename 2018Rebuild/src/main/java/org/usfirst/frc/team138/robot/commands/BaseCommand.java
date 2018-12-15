@@ -3,7 +3,8 @@ package org.usfirst.frc.team138.robot.commands;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- *
+ * Template {@link edu.wpi.first.wpilibj.command.Command Command}
+ * @see edu.wpi.first.wpilibj.command.Command
  */
 public class BaseCommand extends Command {
 
