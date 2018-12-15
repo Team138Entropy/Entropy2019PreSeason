@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Sensors {
 	public static ADXRS450_Gyro gyro; 
 	
-    static Joystick driverStick = new Joystick(0);
+    static Joystick driverStick = new Joystick(OI.xboxController);
 	
 	public static SensorCollection leftSensorCollection;
 	public static SensorCollection rightSensorCollection;
