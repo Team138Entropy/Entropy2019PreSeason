@@ -38,7 +38,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	drivetrain.DriveTrainInit(); 
+    	drivetrain.driveTrainInit(); 
 
 		SmartDashboard.putData(Scheduler.getInstance());
 		
@@ -101,7 +101,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
     	mode = "teleop";
         Robot.accumulatedHeading = 0;
-		Robot.drivetrain.Relax();
+		Robot.drivetrain.relax();
 
 		Constants.AutoEnable=true;
     }

@@ -42,7 +42,7 @@ public class Drivetrain extends Subsystem{
 	}
 
 
-	public void DriveTrainInit()
+	public void driveTrainInit()
 	{
 		/* choose the sensor and sensor direction */
 		frontLeftTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0,0);
@@ -119,7 +119,7 @@ public class Drivetrain extends Subsystem{
 		if (moveSpeed==0 && rotateSpeed==0) {
 			zeroCounter+=1;
 			if (zeroCounter>Constants.zeroDelay) 
-				Relax(); // set Talon VOLTAGE to 0
+				relax(); // set Talon VOLTAGE to 0
 			else {
 				// set Talon SPEED to 0
 				frontLeftTalon.set(ControlMode.Velocity, 0);
@@ -145,7 +145,7 @@ public class Drivetrain extends Subsystem{
 
 	}
 
-	public void Relax(){
+	public void relax(){
 		frontLeftTalon.set(ControlMode.PercentOutput, 0);
 		frontRightTalon.set(ControlMode.PercentOutput, 0);
 		SmartDashboard.putNumber("L PWM", -frontLeftTalon.getMotorOutputPercent());
