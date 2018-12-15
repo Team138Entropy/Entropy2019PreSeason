@@ -60,7 +60,7 @@ public class Robot extends IterativeRobot {
 		
 		SmartDashboard.putBoolean("practiceBot", Constants.practiceBot);		
         Robot.accumulatedHeading = 0;
-        Constants.AutoEnable=true;
+        Constants.AutoEnable= true;
 
         // *facepalm*
         // Constants.practiceBot = isPracticeRobot();
