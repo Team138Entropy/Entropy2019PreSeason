@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.OI;
 import org.usfirst.frc.team138.robot.Robot;
-import org.usfirst.frc.team138.robot.Sensors;
 
-//import org.usfirst.frc.team138.robot.subsystems.Claw;
-
+/**
+ * 
+ */
 public class TeleopDrive extends Command{
 	
 	

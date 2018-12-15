@@ -2,6 +2,7 @@ package org.usfirst.frc.team138.robot;
 
 public class AutoLocations {
 	
+	// NOTE: Do we really need these? They're not referenced anywhere.
     private static final int[][] scaleNear = new int[][] {{0, 1}, {1, 2}, {2, 3}, {2, 5}};
 	private static final int[][] scaleFar  = new int[][] {{1, 5}, {5, 6}, {6, 7}, {7, 8}, {8, 7}, {8, 9}};
 	private static final int[][] centerLSw = new int[][] {{10, 13}, {13, 14}, {14, 11}};

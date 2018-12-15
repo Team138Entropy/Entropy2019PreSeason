@@ -3,9 +3,6 @@ package org.usfirst.frc.team138.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-//import edu.wpi.first.wpilibj.command.Command;
-import org.usfirst.frc.team138.robot.commands.*;
-import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -89,36 +86,6 @@ public final class OI {
     static double lastX=0;
     static double LastY=0;
     
-    public OI(){
-    	//Driver Stick
-    	winchButton.whileHeld(new ControlWinch());
-    	
-    	//Operator Stick
-    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
-    	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.SWITCH));
-    	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
-    	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
-    	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
-    	homeElevatorButton.whileHeld(new HomeElevator());
-
-    	readyToAcquireButton.whenPressed(new ReadyToAcquire());
-    	
-    	acquireButton.whenPressed(new StartAcquire());
-    	acquireButton.whenReleased(new CompleteAcquire());
-    	releaseButton.whenPressed(new StartRelease());
-    	releaseButton.whenReleased(new CompleteRelease());
-    	
-    	toggleWristButton.whenPressed(new ToggleWrist());
-    	toggleGrasperButton.whenPressed(new ToggleGrasper());
-    	toggleRollersButton.whenPressed(new ToggleRollers());
-    	toggleToClimb.whenPressed(new PrepareToClimb());
-    	
-    	
-    	//simulateDetectCubeButton.whenPressed(new SimulateDetectCube());
-    	//simulateAcquireCubeButton.whenPressed(new SimulateAcquireCube());
-    }
-    
-    
 	public static double getMoveSpeed()
 	{
 		// joystick values are opposite to robot directions
@@ -181,8 +148,4 @@ public final class OI {
 	public static boolean isFullSpeed() {
 		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
 	}
-	
-	
-	    
-} // :D)))
-
+} // :D
