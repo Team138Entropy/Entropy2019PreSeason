@@ -103,14 +103,15 @@ public class Drivetrain extends Subsystem{
         Robot.drivetrain.driveCloseLoopControl(moveSpeed, rotateSpeed);
     }
     
-    public void drive(DriveSignal signal)
-    {
-        driveCheezy(signal);
+	public void drive(DriveSignal signal)
+    {	
+		driveCheezy(signal);
     }
 
     public void driveCheezy(DriveSignal signal) {
-        frontLeftTalon.set(ControlMode.Velocity, signal.getLeft());
-		frontRightTalon.set(ControlMode.Velocity, signal.getRight());
+        frontLeftTalon.set(ControlMode.PercentOutput, signal.getLeft() * Constants.tempWheelSpeed);
+		frontRightTalon.set(ControlMode.PercentOutput, signal.getRight() * Constants.tempWheelSpeed);
+
     }
 
 	public void driveCloseLoopControl(double moveSpeed, double rotateSpeed)

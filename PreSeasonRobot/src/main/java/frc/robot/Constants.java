@@ -46,6 +46,7 @@ public class Constants {
 		// Drivetrain
 		public final static boolean useClosedLoopDrivetrain = true;
 		public final static double driveWheelSpacing = (23.65 / 39.37) * 100; // Centimeters (from 22 inches)
+		public final static double tempWheelSpeed = 1;
 		// Full joystick motion equates to following actual move speeds:
 		public final static double ClosedLoopCruiseVelocity = 2.4; // meters / second
 		public final static double ClosedLoopSlowVelocity = 1.2; // M/sec

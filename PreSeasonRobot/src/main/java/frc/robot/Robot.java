@@ -1,5 +1,6 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 //import edu.wpi.first.wpilibj.Preferences;
 
@@ -93,6 +94,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+        Scheduler.getInstance().run();
 //		LiveWindow.run();
     }
     

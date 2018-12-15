@@ -27,9 +27,11 @@ public class TeleopDrive extends Command{
 		double moveSpeed,rotateSpeed;
 		moveSpeed=OI.getMoveSpeed();
 		rotateSpeed= OI.getRotateSpeed();
-		
+		moveSpeed = -moveSpeed;
+
 		System.out.println(moveSpeed);
 		System.out.println(rotateSpeed);
+
 		// // Full speed or slow speed?
 		// if (OI.isFullSpeed()) {
 		// 	// Full speed
@@ -46,7 +48,7 @@ public class TeleopDrive extends Command{
 		// rotateSpeed=Robot.drivetrain.limitRotateAccel(rotateSpeed);
 		// Robot.drivetrain.drive(moveSpeed,rotateSpeed);
 
-		Robot.drivetrain.drive(ourDrive.cheesyDrive(moveSpeed, rotateSpeed, false, false));
+		Robot.drivetrain.drive(ourDrive.cheesyDrive(moveSpeed, rotateSpeed, OI.isQuickturn(), OI.isFullSpeed()));
 	}
 
 	protected boolean isFinished() {

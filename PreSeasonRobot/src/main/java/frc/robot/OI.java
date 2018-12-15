@@ -66,8 +66,7 @@ public final class OI {
     
     public OI(){
     	
-    }
-    
+	}
     
 	public static double getMoveSpeed()
 	{
@@ -97,7 +96,9 @@ public final class OI {
 		return driverStick.getRawAxis(xboxRightTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
 	}
 	
-	
+	public static boolean isQuickturn() {
+		return driverStick.getRawAxis(xboxLeftTriggerAxis) > Constants.highSpeedModeTriggerThreshold;
+	}
 	    
 } // :D)))
 
