@@ -189,7 +189,7 @@ public class Robot extends IterativeRobot {
     }
     
     public static boolean isPracticeRobot() {
-    	return (! Sensors.practiceRobotJumperPin.get());
+    	return Constants.practiceBot;
     }
 
     /**
