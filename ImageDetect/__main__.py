@@ -23,7 +23,10 @@ cv2.createTrackbar('highHue', 'colorTest', icol[3], 255, nothing)
 cv2.createTrackbar('highSat', 'colorTest', icol[4], 255, nothing)
 cv2.createTrackbar('highVal', 'colorTest', icol[5], 255, nothing)
 
+# how much to guassian blur
 cv2.createTrackbar('guassian', 'colorTest', 0, 20, nothing)
+
+# the color threshold
 cv2.createTrackbar('threshold', 'colorTest', 0, 255, nothing)
 
 # Raspberry pi file path example.
@@ -39,7 +42,11 @@ while True:
     highHue = cv2.getTrackbarPos('highHue', 'colorTest')
     highSat = cv2.getTrackbarPos('highSat', 'colorTest')
     highVal = cv2.getTrackbarPos('highVal', 'colorTest')
+
+    # how much to guassian blur
     blurVal = (cv2.getTrackbarPos('guassian', 'colorTest') * 2) + 1
+
+    # the color threshold
     threshold = cv2.getTrackbarPos('threshold', 'colorTest')
 
     # Show the original image.
@@ -66,6 +73,8 @@ while True:
     # Show the first mask
     cv2.imshow('mask-plain', mask)
 
+    # i have no clue what this does
+    # just copy-pasted
     kernal = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernal)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernal)
@@ -82,35 +91,40 @@ while True:
     _,threshd = cv2.threshold(result, threshold, 255, cv2.THRESH_BINARY)
 
     cv2.imshow('threshold', threshd)
-    #threshd = cv2.cvtColor(threshd, cv2.CV_8UC1)
 
+    # convert to grayscale
     gray = cv2.cvtColor(threshd, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
+    cv2.imshow('gray', gray)
+
+    # find the edges of the image
     edged = cv2.Canny(gray, 30, 200)
 
+    # and display them
     cv2.imshow('edged', edged)
 
-    contors = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contors = imutils.grab_contours(contors)
-    contors = sorted(contors, key = cv2.contourArea, reverse = True)[:10]
-    screenCnt = None
+    # find contours
+    contours = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours = imutils.grab_contours(contours)
+    # i also don't know what this does
+    contours = sorted(contours, key = cv2.contourArea, reverse = True)[:10]
 
-
-    for c in contors:
+    # the actual list of contours
+    foundContours = []
+    for c in contours:
         # approximate the contour
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.015 * peri, True)
 
         # if our approximated contour has 6 points, then
         if len(approx) == 6:
-            cv2.drawContours(result, [approx], -1, (0, 255, 0), 3)
-            screenCnt = approx
+            foundContours.append(approx)
             break
+
+    cv2.drawContours(result, foundContours, -1, (0, 255, 0), 3)
 
     cv2.imshow("contours", result)
 
-    cv2.imshow('gray', gray)
-    #cv2.imshow('contours', res#)
 
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
