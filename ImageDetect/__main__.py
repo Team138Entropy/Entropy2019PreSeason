@@ -29,9 +29,6 @@ cv2.createTrackbar('guassian', 'colorTest', 0, 20, nothing)
 # the color threshold
 cv2.createTrackbar('threshold', 'colorTest', 0, 255, nothing)
 
-# Raspberry pi file path example.
-#frame = cv2.imread('/home/pi/python3/opencv/color-test/colour-circles-test.jpg')
-# Windows file path example.
 frame = cv2.imread('smallball.jpg')
 
 while True:
@@ -121,6 +118,19 @@ while True:
             foundContours.append(approx)
             break
 
+    # get the size of the result image
+    height, width, channels = result.shape
+    # and make a new blank image array with it
+    newBlankArr = np.zeros((height,width), np.uint8)
+    # and make that array an image
+    newBlank = cv2.cvtColor(newBlankArr, cv2.COLOR_GRAY2BGR)
+
+    # and draw contours onto it
+    cv2.drawContours(newBlank, foundContours, -1, (0, 255, 0), 3)
+    cv2.putText(newBlank, str(len(foundContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    cv2.imshow("just contours", newBlank)
+
+    # and onto the result
     cv2.drawContours(result, foundContours, -1, (0, 255, 0), 3)
 
     cv2.imshow("contours", result)
