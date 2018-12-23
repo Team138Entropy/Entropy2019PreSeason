@@ -59,7 +59,7 @@ while True:
 
     epsilon = cv2.getTrackbarPos('epsilon', 'sliders') / 1000
 
-    imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders') / 1000
+    imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders')
 
     # Show the original image.
     cv2.imshow('frame', frame)
