@@ -42,7 +42,15 @@ cv2.createTrackbar('imgDebugLevels', 'sliders', 2, 2, nothing)
 
 frame = cv2.imread('smallcube.jpg')
 
+# a list of all window titles
+windows = []
+lastWindows = []
+def imshow (title, img):
+    windows.append(title)
+    cv2.imshow(title, img)
+
 while True:
+    windows = []
     # Get HSV values from the GUI sliders.
     lowHue = cv2.getTrackbarPos('lowHue', 'sliders')
     lowSat = cv2.getTrackbarPos('lowSat', 'sliders')
@@ -60,9 +68,10 @@ while True:
     epsilon = cv2.getTrackbarPos('epsilon', 'sliders') / 1000
 
     imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders')
+    print(imgDebugLevels)
 
     # Show the original image.
-    cv2.imshow('frame', frame)
+    imshow('frame', frame)
 
     # Blur methods available, comment or uncomment to try different blur methods.
     frameBGR = cv2.GaussianBlur(frame, (blurVal, blurVal), 0)
@@ -73,7 +82,7 @@ while True:
 
     # Show blurred image.
     if imgDebugLevels > 0:
-        cv2.imshow('blurred', frameBGR)
+        imshow('blurred', frameBGR)
 
     # HSV (Hue, Saturation, Value).
     # Convert the frame to HSV colour model.
@@ -85,7 +94,7 @@ while True:
     mask = cv2.inRange(hsv, colorLow, colorHigh)
     # Show the first mask
     if imgDebugLevels > 1:
-        cv2.imshow('mask-plain', mask)
+        imshow('mask-plain', mask)
 
     # i have no clue what this does
     # just copy-pasted
@@ -95,18 +104,18 @@ while True:
 
     # Show morphological transformation mask
     if imgDebugLevels > 1:
-        cv2.imshow('mask', mask)
+        imshow('mask', mask)
 
     # Put mask over top of the original image.
     result = cv2.bitwise_and(frame, frame, mask = mask)
 
     # Show final output image
-    cv2.imshow('colorTest', result)
+    imshow('colorTest', result)
 
     _,threshd = cv2.threshold(result, threshold, 255, cv2.THRESH_BINARY)
 
     if imgDebugLevels > 1:
-        cv2.imshow('threshold', threshd)
+        imshow('threshold', threshd)
 
     # convert to grayscale
     gray = cv2.cvtColor(threshd, cv2.COLOR_BGR2GRAY)
@@ -117,7 +126,7 @@ while True:
 
     # and display them
     if imgDebugLevels > 0:
-        cv2.imshow('edged', threshd)
+        imshow('edged', threshd)
 
     # find contours
     contours = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -159,7 +168,7 @@ while True:
         cv2.putText(matchClone, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
         if imgDebugLevels > 0:
-            cv2.imshow("contours with " + str(numVertices) + " on black background" if limited else "contours on a black background", matchClone)
+            imshow("contours with " + str(numVertices) + " on black background" if limited else "contours on a black background", matchClone)
 
         # on og image
         clonedResult = np.empty_like(result)
@@ -167,15 +176,22 @@ while True:
         cv2.drawContours(clonedResult, contours, -1, (0, 255, 0), 3)
         cv2.putText(clonedResult, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-        cv2.imshow("contours with " + str(numVertices) + " on og image" if limited else "contours on og image", clonedResult)
+        imshow("contours with " + str(numVertices) + " on og image" if limited else "contours on og image", clonedResult)
 
     displayContours(foundMatchingContours, True)
     displayContours(foundAllContours, False)
 
+    # finds anything in the first list that isn't in the second
+    def diff(first, second):
+        # second = set(second)
+        return [item for item in first if item not in second]
 
+    # if a window wan't show this time around, destroy the old copy
+    for title in diff(lastWindows, windows):
+        cv2.destroyWindow(title)
+
+    lastWindows = windows
 
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break
-
-cv2.destroyAllWindows()
