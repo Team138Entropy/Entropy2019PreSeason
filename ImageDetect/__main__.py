@@ -36,6 +36,10 @@ cv2.createTrackbar('threshold', 'sliders', 0, 255, nothing)
 # contour detection epsilon
 cv2.createTrackbar('epsilon', 'sliders', 15, 20, nothing)
 
+# image debug levels
+# 2 = all, 1 = reduced, 0 = only final
+cv2.createTrackbar('imgDebugLevels', 'sliders', 2, 2, nothing)
+
 frame = cv2.imread('smallball.jpg')
 
 while True:
@@ -55,6 +59,8 @@ while True:
 
     epsilon = cv2.getTrackbarPos('epsilon', 'sliders') / 1000
 
+    imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders') / 1000
+
     # Show the original image.
     cv2.imshow('frame', frame)
 
@@ -66,7 +72,8 @@ while True:
     frameBGR = cv2.filter2D(frameBGR, -1, kernal)"""
 
     # Show blurred image.
-    cv2.imshow('blurred', frameBGR)
+    if imgDebugLevels > 0:
+        cv2.imshow('blurred', frameBGR)
 
     # HSV (Hue, Saturation, Value).
     # Convert the frame to HSV colour model.
@@ -77,7 +84,8 @@ while True:
     colorHigh = np.array([highHue,highSat,highVal])
     mask = cv2.inRange(hsv, colorLow, colorHigh)
     # Show the first mask
-    cv2.imshow('mask-plain', mask)
+    if imgDebugLevels > 1:
+        cv2.imshow('mask-plain', mask)
 
     # i have no clue what this does
     # just copy-pasted
@@ -86,7 +94,8 @@ while True:
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernal)
 
     # Show morphological transformation mask
-    cv2.imshow('mask', mask)
+    if imgDebugLevels > 1:
+        cv2.imshow('mask', mask)
 
     # Put mask over top of the original image.
     result = cv2.bitwise_and(frame, frame, mask = mask)
@@ -96,7 +105,8 @@ while True:
 
     _,threshd = cv2.threshold(result, threshold, 255, cv2.THRESH_BINARY)
 
-    cv2.imshow('threshold', threshd)
+    if imgDebugLevels > 1:
+        cv2.imshow('threshold', threshd)
 
     # convert to grayscale
     gray = cv2.cvtColor(threshd, cv2.COLOR_BGR2GRAY)
@@ -106,7 +116,8 @@ while True:
     edged = cv2.Canny(gray, 30, 200)
 
     # and display them
-    cv2.imshow('edged', threshd)
+    if imgDebugLevels > 0:
+        cv2.imshow('edged', threshd)
 
     # find contours
     contours = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -142,19 +153,38 @@ while True:
     # and draw the matching contours (have numVertices vertices) onto it
     matchClone = np.empty_like(newBlank)
     matchClone[:] = newBlank
+
+    # write on black background
     cv2.drawContours(matchClone, foundMatchingContours, -1, (0, 255, 0), 3)
     cv2.putText(matchClone, str(len(foundMatchingContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    cv2.imshow("contours with " + str(numVertices) + " on black background", matchClone)
-    cv2.imshow("contours with " + str(numVertices) + " on og image", result)
+
+    if imgDebugLevels > 0:
+        cv2.imshow("contours with " + str(numVertices) + " on black background", matchClone)
+
+    # on og image
+    clonedResult = np.empty_like(result)
+    clonedResult[:] = result
+    cv2.drawContours(clonedResult, foundMatchingContours, -1, (0, 255, 0), 3)
+    cv2.putText(clonedResult, str(len(foundMatchingContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+    cv2.imshow("contours with " + str(numVertices) + " on og image", clonedResult)
 
 
     # draw the contours onto it
     clone = np.empty_like(newBlank)
     clone[:] = newBlank
+
+    # write on black background
     cv2.drawContours(clone, foundAllContours, -1, (0, 255, 0), 3)
     cv2.putText(clone, str(len(foundAllContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    cv2.imshow("all contours", clone)
-    cv2.imshow("contours with " + str(numVertices) + " on og image", clone)
+    if imgDebugLevels > 0:
+        cv2.imshow("all contours on black background", clone)
+
+    # write on og image
+    cv2.drawContours(result, foundAllContours, -1, (0, 255, 0), 3)
+    cv2.putText(result, str(len(foundAllContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    if imgDebugLevels > 0:
+        cv2.imshow("all contours on og image", result)
 
 
 
