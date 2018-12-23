@@ -7,12 +7,8 @@ import imutils
 def nothing(*arg):
     pass
 
-blurVal = 13
-# Initial HSV GUI slider values to load on program start.
-icol = (27, 101, 5, 38, 249, 255)    # Green
-#icol = (18, 0, 196, 36, 255, 255)  # Yellow
-#icol = (89, 0, 0, 125, 255, 255)  # Blue
-#icol = (0, 100, 80, 10, 255, 255)   # Red
+# default values
+icol = (27, 101, 5, 38, 249, 255)
 cv2.namedWindow('colorTest')
 # Lower range colour sliders.
 cv2.createTrackbar('lowHue', 'colorTest', icol[0], 255, nothing)
