@@ -53,7 +53,7 @@ while True:
     # the color threshold
     threshold = cv2.getTrackbarPos('threshold', 'sliders')
 
-    epsilon = cv2.getTrackbarPos('epsilon', 'sliders') * 1000
+    epsilon = cv2.getTrackbarPos('epsilon', 'sliders') / 1000
 
     # Show the original image.
     cv2.imshow('frame', frame)
@@ -144,7 +144,8 @@ while True:
     matchClone[:] = newBlank
     cv2.drawContours(matchClone, foundMatchingContours, -1, (0, 255, 0), 3)
     cv2.putText(matchClone, str(len(foundMatchingContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    cv2.imshow("contours with " + str(numVertices), matchClone)
+    cv2.imshow("contours with " + str(numVertices) + " on black background", matchClone)
+    cv2.imshow("contours with " + str(numVertices) + " on og image", result)
 
 
     # draw the contours onto it
@@ -153,6 +154,7 @@ while True:
     cv2.drawContours(clone, foundAllContours, -1, (0, 255, 0), 3)
     cv2.putText(clone, str(len(foundAllContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
     cv2.imshow("all contours", clone)
+    cv2.imshow("contours with " + str(numVertices) + " on og image", clone)
 
 
 
