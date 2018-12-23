@@ -12,10 +12,10 @@ epsilon = 0.015
 numVertices = 6
 
 # for cube
-# icol = (27, 101, 5, 38, 249, 255)
+icol = (27, 101, 5, 38, 249, 255)
 
 # for ball
-icol = (20, 128, 0, 41, 249, 255)
+# icol = (20, 128, 0, 41, 249, 255)
 
 cv2.namedWindow('sliders')
 # Lower range colour sliders.
@@ -40,7 +40,7 @@ cv2.createTrackbar('epsilon', 'sliders', 15, 20, nothing)
 # 2 = all, 1 = reduced, 0 = only final
 cv2.createTrackbar('imgDebugLevels', 'sliders', 2, 2, nothing)
 
-frame = cv2.imread('smallball.jpg')
+frame = cv2.imread('smallcube.jpg')
 
 while True:
     # Get HSV values from the GUI sliders.
@@ -142,49 +142,35 @@ while True:
             if onlyOneContour:
                 break
 
+        # get the size of the result image
+        height, width, channels = result.shape
+        # and make a new blank image array with it
+        newBlankArr = np.zeros((height,width), np.uint8)
+        # and make that array an image
+        newBlank = cv2.cvtColor(newBlankArr, cv2.COLOR_GRAY2BGR)
 
-    # get the size of the result image
-    height, width, channels = result.shape
-    # and make a new blank image array with it
-    newBlankArr = np.zeros((height,width), np.uint8)
-    # and make that array an image
-    newBlank = cv2.cvtColor(newBlankArr, cv2.COLOR_GRAY2BGR)
+        # and draw the matching contours (have numVertices vertices) onto it
+    def displayContours(contours, limited = False):
+        matchClone = np.empty_like(newBlank)
+        matchClone[:] = newBlank
 
-    # and draw the matching contours (have numVertices vertices) onto it
-    matchClone = np.empty_like(newBlank)
-    matchClone[:] = newBlank
+        # write on black background
+        cv2.drawContours(matchClone, contours, -1, (0, 255, 0), 3)
+        cv2.putText(matchClone, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-    # write on black background
-    cv2.drawContours(matchClone, foundMatchingContours, -1, (0, 255, 0), 3)
-    cv2.putText(matchClone, str(len(foundMatchingContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        if imgDebugLevels > 0:
+            cv2.imshow("contours with " + str(numVertices) + " on black background" if limited else "contours on a black background", matchClone)
 
-    if imgDebugLevels > 0:
-        cv2.imshow("contours with " + str(numVertices) + " on black background", matchClone)
+        # on og image
+        clonedResult = np.empty_like(result)
+        clonedResult[:] = result
+        cv2.drawContours(clonedResult, contours, -1, (0, 255, 0), 3)
+        cv2.putText(clonedResult, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-    # on og image
-    clonedResult = np.empty_like(result)
-    clonedResult[:] = result
-    cv2.drawContours(clonedResult, foundMatchingContours, -1, (0, 255, 0), 3)
-    cv2.putText(clonedResult, str(len(foundMatchingContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        cv2.imshow("contours with " + str(numVertices) + " on og image" if limited else "contours on og image", clonedResult)
 
-    cv2.imshow("contours with " + str(numVertices) + " on og image", clonedResult)
-
-
-    # draw the contours onto it
-    clone = np.empty_like(newBlank)
-    clone[:] = newBlank
-
-    # write on black background
-    cv2.drawContours(clone, foundAllContours, -1, (0, 255, 0), 3)
-    cv2.putText(clone, str(len(foundAllContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    if imgDebugLevels > 0:
-        cv2.imshow("all contours on black background", clone)
-
-    # write on og image
-    cv2.drawContours(result, foundAllContours, -1, (0, 255, 0), 3)
-    cv2.putText(result, str(len(foundAllContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    if imgDebugLevels > 0:
-        cv2.imshow("all contours on og image", result)
+    displayContours(foundMatchingContours, True)
+    displayContours(foundAllContours, False)
 
 
 
