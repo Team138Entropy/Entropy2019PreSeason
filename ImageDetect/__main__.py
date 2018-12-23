@@ -7,8 +7,16 @@ import imutils
 def nothing(*arg):
     pass
 
-# default values
+onlyOneContour = False
+epsilon = 0.015
+numVertices = 6
+
+# for cube
 icol = (27, 101, 5, 38, 249, 255)
+
+# for ball
+# icol = (20, 128, 0, 41, 249, 255)
+
 cv2.namedWindow('colorTest')
 # Lower range colour sliders.
 cv2.createTrackbar('lowHue', 'colorTest', icol[0], 255, nothing)
@@ -88,13 +96,12 @@ while True:
     # convert to grayscale
     gray = cv2.cvtColor(threshd, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
-    cv2.imshow('gray', gray)
 
     # find the edges of the image
     edged = cv2.Canny(gray, 30, 200)
 
     # and display them
-    cv2.imshow('edged', edged)
+    cv2.imshow('edged', threshd)
 
     # find contours
     contours = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -103,16 +110,22 @@ while True:
     contours = sorted(contours, key = cv2.contourArea, reverse = True)[:10]
 
     # the actual list of contours
-    foundContours = []
+    foundMatchingContours = []
+    foundAllContours = []
     for c in contours:
         # approximate the contour
         peri = cv2.arcLength(c, True)
-        approx = cv2.approxPolyDP(c, 0.015 * peri, True)
+        approx = cv2.approxPolyDP(c, epsilon * peri, True)
 
-        # if our approximated contour has 6 points, then
-        if len(approx) == 6:
-            foundContours.append(approx)
-            break
+        # add this contour
+        foundAllContours.append(approx)
+
+        # if our approximated contour has numVertices points, then
+        if len(approx) == numVertices:
+            foundMatchingContours.append(approx)
+            if onlyOneContour:
+                break
+
 
     # get the size of the result image
     height, width, channels = result.shape
@@ -121,15 +134,21 @@ while True:
     # and make that array an image
     newBlank = cv2.cvtColor(newBlankArr, cv2.COLOR_GRAY2BGR)
 
-    # and draw contours onto it
-    cv2.drawContours(newBlank, foundContours, -1, (0, 255, 0), 3)
-    cv2.putText(newBlank, str(len(foundContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    cv2.imshow("just contours", newBlank)
+    # and draw the matching contours (have numVertices vertices) onto it
+    matchClone = np.empty_like(newBlank)
+    matchClone[:] = newBlank
+    cv2.drawContours(matchClone, foundMatchingContours, -1, (0, 255, 0), 3)
+    cv2.putText(matchClone, str(len(foundMatchingContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    cv2.imshow("contours with " + str(numVertices), matchClone)
 
-    # and onto the result
-    cv2.drawContours(result, foundContours, -1, (0, 255, 0), 3)
 
-    cv2.imshow("contours", result)
+    # draw the contours onto it
+    clone = np.empty_like(newBlank)
+    clone[:] = newBlank
+    cv2.drawContours(clone, foundAllContours, -1, (0, 255, 0), 3)
+    cv2.putText(clone, str(len(foundAllContours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    cv2.imshow("all contours", clone)
+
 
 
     k = cv2.waitKey(5) & 0xFF
