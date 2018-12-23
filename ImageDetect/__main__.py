@@ -12,43 +12,48 @@ epsilon = 0.015
 numVertices = 6
 
 # for cube
-icol = (27, 101, 5, 38, 249, 255)
+# icol = (27, 101, 5, 38, 249, 255)
 
 # for ball
-# icol = (20, 128, 0, 41, 249, 255)
+icol = (20, 128, 0, 41, 249, 255)
 
-cv2.namedWindow('colorTest')
+cv2.namedWindow('sliders')
 # Lower range colour sliders.
-cv2.createTrackbar('lowHue', 'colorTest', icol[0], 255, nothing)
-cv2.createTrackbar('lowSat', 'colorTest', icol[1], 255, nothing)
-cv2.createTrackbar('lowVal', 'colorTest', icol[2], 255, nothing)
+cv2.createTrackbar('lowHue', 'sliders', icol[0], 255, nothing)
+cv2.createTrackbar('lowSat', 'sliders', icol[1], 255, nothing)
+cv2.createTrackbar('lowVal', 'sliders', icol[2], 255, nothing)
 # Higher range colour sliders.
-cv2.createTrackbar('highHue', 'colorTest', icol[3], 255, nothing)
-cv2.createTrackbar('highSat', 'colorTest', icol[4], 255, nothing)
-cv2.createTrackbar('highVal', 'colorTest', icol[5], 255, nothing)
+cv2.createTrackbar('highHue', 'sliders', icol[3], 255, nothing)
+cv2.createTrackbar('highSat', 'sliders', icol[4], 255, nothing)
+cv2.createTrackbar('highVal', 'sliders', icol[5], 255, nothing)
 
 # how much to guassian blur
-cv2.createTrackbar('guassian', 'colorTest', 0, 20, nothing)
+cv2.createTrackbar('guassian', 'sliders', 0, 20, nothing)
 
 # the color threshold
-cv2.createTrackbar('threshold', 'colorTest', 0, 255, nothing)
+cv2.createTrackbar('threshold', 'sliders', 0, 255, nothing)
+
+# contour detection epsilon
+cv2.createTrackbar('epsilon', 'sliders', 15, 20, nothing)
 
 frame = cv2.imread('smallball.jpg')
 
 while True:
     # Get HSV values from the GUI sliders.
-    lowHue = cv2.getTrackbarPos('lowHue', 'colorTest')
-    lowSat = cv2.getTrackbarPos('lowSat', 'colorTest')
-    lowVal = cv2.getTrackbarPos('lowVal', 'colorTest')
-    highHue = cv2.getTrackbarPos('highHue', 'colorTest')
-    highSat = cv2.getTrackbarPos('highSat', 'colorTest')
-    highVal = cv2.getTrackbarPos('highVal', 'colorTest')
+    lowHue = cv2.getTrackbarPos('lowHue', 'sliders')
+    lowSat = cv2.getTrackbarPos('lowSat', 'sliders')
+    lowVal = cv2.getTrackbarPos('lowVal', 'sliders')
+    highHue = cv2.getTrackbarPos('highHue', 'sliders')
+    highSat = cv2.getTrackbarPos('highSat', 'sliders')
+    highVal = cv2.getTrackbarPos('highVal', 'sliders')
 
     # how much to guassian blur
-    blurVal = (cv2.getTrackbarPos('guassian', 'colorTest') * 2) + 1
+    blurVal = (cv2.getTrackbarPos('guassian', 'sliders') * 2) + 1
 
     # the color threshold
-    threshold = cv2.getTrackbarPos('threshold', 'colorTest')
+    threshold = cv2.getTrackbarPos('threshold', 'sliders')
+
+    epsilon = cv2.getTrackbarPos('epsilon', 'sliders') * 1000
 
     # Show the original image.
     cv2.imshow('frame', frame)
