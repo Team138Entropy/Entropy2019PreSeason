@@ -36,6 +36,9 @@ cv2.createTrackbar('threshold', 'sliders', 0, 255, nothing)
 # contour detection epsilon
 cv2.createTrackbar('epsilon', 'sliders', 15, 20, nothing)
 
+# minimum contour area (as a % of source image area)
+cv2.createTrackbar('minArea%', 'sliders', 0, 50, nothing)
+
 # image debug levels
 # 2 = all, 1 = reduced, 0 = only final
 cv2.createTrackbar('imgDebugLevels', 'sliders', 2, 2, nothing)
@@ -50,6 +53,8 @@ def imshow (title, img):
     cv2.imshow(title, img)
 
 while True:
+    height, width = frame.shape[:2]
+
     windows = []
     # Get HSV values from the GUI sliders.
     lowHue = cv2.getTrackbarPos('lowHue', 'sliders')
@@ -58,6 +63,11 @@ while True:
     highHue = cv2.getTrackbarPos('highHue', 'sliders')
     highSat = cv2.getTrackbarPos('highSat', 'sliders')
     highVal = cv2.getTrackbarPos('highVal', 'sliders')
+
+    # it's a percent, so make it in the range of 0-1
+    # then multiply by the total area
+    # now it's on a scale of 0 to the image area
+    minArea = (cv2.getTrackbarPos('minArea%', 'sliders') / 100) * (height * width)
 
     # how much to guassian blur
     blurVal = (cv2.getTrackbarPos('guassian', 'sliders') * 2) + 1
@@ -68,7 +78,6 @@ while True:
     epsilon = cv2.getTrackbarPos('epsilon', 'sliders') / 1000
 
     imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders')
-    print(imgDebugLevels)
 
     # Show the original image.
     imshow('frame', frame)
@@ -144,6 +153,9 @@ while True:
 
         # add this contour
         foundAllContours.append(approx)
+
+        if cv2.contourArea(c) < minArea:
+            break
 
         # if our approximated contour has numVertices points, then
         if len(approx) == numVertices:
