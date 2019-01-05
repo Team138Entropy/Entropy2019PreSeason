@@ -221,21 +221,30 @@ while True:
     displayContours(foundAllContours, False)
 
     if onlyOneContour:
+        finalImg = np.empty_like(result)
+        finalImg[:] = result
+
         # average the points in that contour
         xSum = 0
         ySum = 0
         xCount = 0
         yCount = 0
-        for point in foundAllContours[0][0]:
+        for point in foundAllContours[0]:
+            point = point[0]
+            cv2.circle(
+                finalImg,
+                (int(point[0]), int(point[1])),
+                int(1),
+                (int(125), int(100), int(100)),
+                int(2)
+            )
             xSum += point[0]
             ySum += point[1]
             xCount += 1
             yCount += 1
+
         xAvg = xSum / xCount
         yAvg = ySum / yCount
-
-        finalImg = np.empty_like(result)
-        finalImg[:] = result
 
         # draw a circle where that average is
         cv2.circle(
@@ -249,9 +258,9 @@ while True:
 
         # if the point is on the right
         if xAvg > width / 2:
-            print("turn left " + ((xAvg - width / 2) / width / 2))
+            print("turn left " + "{:12.4f}".format(str((xAvg - width / 2) / (width / 2) * 100)) + "%")
         else:
-            print("turn right")
+            print("turn right " + "{:12.4}".format(str((width / 2 - xAvg) / (width / 2) * 100)) + "%")
 
         imshow("final", finalImg)
 
