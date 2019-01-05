@@ -30,6 +30,9 @@ cv2.createTrackbar('highVal', 'sliders', icol[5], 255, nothing)
 # how much to guassian blur
 cv2.createTrackbar('guassian', 'sliders', 0, 20, nothing)
 
+# how much to guassian blur after filtering
+cv2.createTrackbar('postGuassian', 'sliders', 0, 20, nothing)
+
 # the color threshold
 cv2.createTrackbar('threshold', 'sliders', 0, 255, nothing)
 
@@ -72,6 +75,9 @@ while True:
     # how much to guassian blur
     blurVal = (cv2.getTrackbarPos('guassian', 'sliders') * 2) + 1
 
+    # how much to guassian blur after processing
+    blurValPost = (cv2.getTrackbarPos('postGuassian', 'sliders') * 2) + 1
+
     # the color threshold
     threshold = cv2.getTrackbarPos('threshold', 'sliders')
 
@@ -84,7 +90,7 @@ while True:
 
     # Blur methods available, comment or uncomment to try different blur methods.
     frameBGR = cv2.GaussianBlur(frame, (blurVal, blurVal), 0)
-    frameBGR = cv2.medianBlur(frameBGR, blurVal)
+    #frameBGR = cv2.medianBlur(frameBGR, blurVal)
     #frameBGR = cv2.bilateralFilter(frameBGR, 15 ,75, 75)
     """kernal = np.ones((15, 15), np.float32)/255
     frameBGR = cv2.filter2D(frameBGR, -1, kernal)"""
@@ -129,6 +135,9 @@ while True:
     # convert to grayscale
     gray = cv2.cvtColor(threshd, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
+
+    # post guassian
+    gray = cv2.GaussianBlur(gray, (blurValPost, blurValPost), 0)
 
     # find the edges of the image
     edged = cv2.Canny(gray, 30, 200)
