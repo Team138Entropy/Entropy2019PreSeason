@@ -236,6 +236,8 @@ while True:
 
         finalImg = np.empty_like(result)
         finalImg[:] = result
+
+        # draw a circle where that average is
         cv2.circle(
             finalImg,
             (int(xAvg), int(yAvg)),
@@ -243,6 +245,14 @@ while True:
             (int(125), int(100), int(100)),
             int(10)
         )
+
+
+        # if the point is on the right
+        if xAvg > width / 2:
+            print("turn left " + ((xAvg - width / 2) / width / 2))
+        else:
+            print("turn right")
+
         imshow("final", finalImg)
 
 
