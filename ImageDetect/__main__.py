@@ -7,15 +7,15 @@ import imutils
 def nothing(*arg):
     pass
 
-onlyOneContour = False
+onlyOneContour = True
 epsilon = 0.015
 numVertices = 6
 
 # for cube
-icol = (27, 101, 5, 38, 249, 255)
+# icol = (27, 101, 5, 38, 249, 255)
 
 # for ball
-# icol = (20, 128, 0, 41, 249, 255)
+icol = (20, 128, 0, 41, 249, 255)
 
 cv2.namedWindow('sliders')
 # Lower range colour sliders.
@@ -46,7 +46,7 @@ cv2.createTrackbar('minArea%', 'sliders', 0, 50, nothing)
 # 2 = all, 1 = reduced, 0 = only final
 cv2.createTrackbar('imgDebugLevels', 'sliders', 2, 2, nothing)
 
-frame = cv2.imread('smallcube.jpg')
+frame = cv2.imread('smallball.jpg')
 
 # a list of all window titles
 windows = []
@@ -155,32 +155,50 @@ while True:
     # the actual list of contours
     foundMatchingContours = []
     foundAllContours = []
+
+    # a list of dicts, containing contours and their data
+    contoursAndData = []
+
     for c in contours:
         # approximate the contour
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, epsilon * peri, True)
+        c = approx
 
         # add this contour
-        foundAllContours.append(approx)
+        foundAllContours.append(c)
+
+        contoursAndData.append({"contour": c, "area": cv2.contourArea(c), "num": len(c)})
 
         if cv2.contourArea(c) < minArea:
             break
 
         # if our approximated contour has numVertices points, then
-        if len(approx) == numVertices:
-            foundMatchingContours.append(approx)
-            if onlyOneContour:
-                break
+        if len(c) == numVertices:
+            foundMatchingContours.append(c)
 
-        # get the size of the result image
-        height, width, channels = result.shape
-        # and make a new blank image array with it
-        newBlankArr = np.zeros((height,width), np.uint8)
-        # and make that array an image
-        newBlank = cv2.cvtColor(newBlankArr, cv2.COLOR_GRAY2BGR)
+    # if we've enabling filtering to only one contour...
+    if onlyOneContour:
+        # sort the contours
+        contoursAndData = sorted(contoursAndData, key=lambda c: c["area"], reverse=True)
+        # filter the biggest one
+        foundAllContours = [contoursAndData[0]["contour"]]
+        if contoursAndData[0]["num"] == numVertices:
+            foundMatchingContours = foundAllContours
+        else:
+            foundMatchingContours = []
 
-        # and draw the matching contours (have numVertices vertices) onto it
+    # get the size of the result image
+    height, width, channels = result.shape
+    # and make a new blank image array with it
+    newBlankArr = np.zeros((height,width), np.uint8)
+    # and make that array an image
+    newBlank = cv2.cvtColor(newBlankArr, cv2.COLOR_GRAY2BGR)
+
+
+    # and draw the matching contours (have numVertices vertices) onto it
     def displayContours(contours, limited = False):
+        # print(contours)
         matchClone = np.empty_like(newBlank)
         matchClone[:] = newBlank
 
@@ -201,6 +219,35 @@ while True:
 
     displayContours(foundMatchingContours, True)
     displayContours(foundAllContours, False)
+
+    if onlyOneContour:
+        # average the points in that contour
+        xSum = 0
+        ySum = 0
+        xCount = 0
+        yCount = 0
+        for point in foundAllContours[0][0]:
+            xSum += point[0]
+            ySum += point[1]
+            xCount += 1
+            yCount += 1
+        xAvg = xSum / xCount
+        yAvg = ySum / yCount
+
+        finalImg = np.empty_like(result)
+        finalImg[:] = result
+        cv2.circle(
+            finalImg,
+            (int(xAvg), int(yAvg)),
+            int(3),
+            (int(125), int(100), int(100)),
+            int(10)
+        )
+        imshow("final", finalImg)
+
+
+
+    ## window cleanup
 
     # finds anything in the first list that isn't in the second
     def diff(first, second):
