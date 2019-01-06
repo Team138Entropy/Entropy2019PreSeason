@@ -18,7 +18,7 @@ timeDelayMs = 500
 # icol = (27, 101, 5, 38, 249, 255)
 
 # for ball
-icol = (20, 128, 0, 41, 249, 255)
+icol = (21, 128, 0, 41, 249, 255)
 
 cv2.namedWindow('sliders')
 # Lower range colour sliders.
@@ -185,13 +185,14 @@ while True:
             approx = cv2.approxPolyDP(c, epsilon * peri, True)
             c = approx
 
+
+            if cv2.contourArea(c) < minArea:
+                break
+
             # add this contour
             foundAllContours.append(c)
 
             contoursAndData.append({"contour": c, "area": cv2.contourArea(c), "num": len(c)})
-
-            if cv2.contourArea(c) < minArea:
-                break
 
             # if our approximated contour has numVertices points, then
             if len(c) == numVertices or numVertices == 0:
