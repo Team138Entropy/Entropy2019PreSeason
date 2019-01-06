@@ -199,7 +199,7 @@ while True:
                 foundMatchingContours.append(c)
 
         # if we've enabling filtering to only one contour...
-        if onlyOneContour:
+        if onlyOneContour and len(contoursAndData) > 0:
             # sort the contours
             contoursAndData = sorted(contoursAndData, key=lambda c: c["area"], reverse=True)
             # filter the biggest one
@@ -242,7 +242,7 @@ while True:
         displayContours(foundMatchingContours, True)
         displayContours(foundAllContours, False)
 
-        if onlyOneContour:
+        if onlyOneContour and len(contoursAndData) > 0:
             finalImg = np.empty_like(result)
             finalImg[:] = result
 
