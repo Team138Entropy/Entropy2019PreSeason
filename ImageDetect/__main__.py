@@ -12,7 +12,7 @@ def nothing(*arg):
 onlyOneContour = True
 epsilon = 0.015
 numVertices = 10
-timeDelayMs = 500
+timeDelayMs = 0
 
 # for cube
 # icol = (27, 101, 5, 38, 249, 255)
@@ -42,8 +42,8 @@ cv2.createTrackbar('threshold', 'sliders', 0, 255, nothing)
 # contour detection epsilon
 cv2.createTrackbar('epsilon', 'sliders', 15, 20, nothing)
 
-# minimum contour area (as a % of source image area)
-cv2.createTrackbar('minArea%', 'sliders', 0, 50, nothing)
+# minimum contour area (as a 10000th of source image area)
+cv2.createTrackbar('minArea10000th', 'sliders', 0, 50, nothing)
 
 # image debug levels
 # 3 = all, 2 = some, 1 = reduced, 0 = only final
@@ -84,7 +84,7 @@ while True:
         # it's a percent, so make it in the range of 0-1
         # then multiply by the total area
         # now it's on a scale of 0 to the image area
-        minArea = (cv2.getTrackbarPos('minArea%', 'sliders') / 100) * (height * width)
+        minArea = cv2.getTrackbarPos('minArea10000th', 'sliders') * (height * width) / 10000
 
         # how much to guassian blur
         blurVal = (cv2.getTrackbarPos('guassian', 'sliders') * 2) + 1
@@ -192,7 +192,7 @@ while True:
             # add this contour
             foundAllContours.append(c)
 
-            contoursAndData.append({"contour": c, "area": cv2.contourArea(c), "num": len(c)})
+            contoursAndData.append({"contour": c, "area": cv2.contourArea(c), "num": len(c), "area": cv2.contourArea(c)})
 
             # if our approximated contour has numVertices points, then
             if len(c) == numVertices or numVertices == 0:
@@ -278,7 +278,7 @@ while True:
             )
 
 
-            cv2.putText(finalImg, "found " + str(contoursAndData[0]["num"]) + " contours", (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+            cv2.putText(finalImg, "found " + str(contoursAndData[0]["num"]) + " contour points & area 10000th " + str(contoursAndData[0]["area"] / (width * height) * 10000), (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
             if imgDebugLevels > 0:
                 imshow("final", finalImg)
             outStr = ""
