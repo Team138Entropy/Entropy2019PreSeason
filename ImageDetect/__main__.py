@@ -13,6 +13,9 @@ onlyOneContour = True
 epsilon = 0.015
 numVertices = 10
 timeDelayMs = 0
+maxFpsArrLen = 30
+
+fpsArr = []
 
 # for cube
 # icol = (27, 101, 5, 38, 249, 255)
@@ -70,6 +73,7 @@ print("loading " + str(args))
 while True:
     for file in args:
         frame = cv2.imread(file)
+        start = time.time()
         height, width = frame.shape[:2]
 
         windows = []
@@ -303,11 +307,19 @@ while True:
                     (height / 2 - yAvg) / (height / 2) * 100 / 2
                 )) + "%"
 
-            print(outStr)
+            # print(outStr)
             cv2.putText(finalImg, outStr, (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+
+            # calculate & display FPS
+            end = time.time()
+            fpsArr.append(1 / (end - start))
+            if len(fpsArr) > maxFpsArrLen:
+                fpsArr.pop(0)
+
+            cv2.putText(finalImg, "{:3.3}".format(str(1 / (end - start))) + " fps, " + "{:3.3}".format(str(sum(fpsArr) / len(fpsArr))) + " fps average", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
             imshow("final", finalImg)
 
-
+        # print("{:3.3}".format(str(1 / (end - start))), "fps")
 
         ## window cleanup
 
