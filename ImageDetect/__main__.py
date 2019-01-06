@@ -12,6 +12,7 @@ def nothing(*arg):
 onlyOneContour = True
 epsilon = 0.015
 numVertices = 10
+timeDelayMs = 500
 
 # for cube
 # icol = (27, 101, 5, 38, 249, 255)
@@ -47,6 +48,8 @@ cv2.createTrackbar('minArea%', 'sliders', 0, 50, nothing)
 # image debug levels
 # 3 = all, 2 = some, 1 = reduced, 0 = only final
 cv2.createTrackbar('imgDebugLevels', 'sliders', 0, 3, nothing)
+
+cv2.createTrackbar('timeDelayMs', 'sliders', timeDelayMs, 5000, nothing)
 
 cv2.createTrackbar('numVertices', 'sliders', numVertices, 20, nothing)
 
@@ -97,6 +100,8 @@ while True:
         imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders')
 
         numVertices = cv2.getTrackbarPos('numVertices', 'sliders')
+
+        timeDelayMs = cv2.getTrackbarPos('timeDelayMs', 'sliders')
 
         if imgDebugLevels > 0:
             # Show the original image.
@@ -315,7 +320,7 @@ while True:
             cv2.destroyWindow(title)
 
         lastWindows = windows
-        time.sleep(1)
+        time.sleep(timeDelayMs / 1000)
 
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
