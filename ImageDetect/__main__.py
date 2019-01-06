@@ -240,7 +240,7 @@ while True:
                 finalImg,
                 (int(point[0]), int(point[1])),
                 int(1),
-                (int(125), int(100), int(100)),
+                (int(0), int(0), int(255)),
                 int(2)
             )
             xSum += point[0]
@@ -255,9 +255,9 @@ while True:
         cv2.circle(
             finalImg,
             (int(xAvg), int(yAvg)),
-            int(3),
-            (int(125), int(100), int(100)),
-            int(10)
+            int(1),
+            (int(255), int(0), int(0)),
+            int(5)
         )
 
 
