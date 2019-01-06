@@ -264,24 +264,24 @@ while True:
         cv2.putText(finalImg, "found " + str(contoursAndData[0]["num"]) + " contours", (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
         imshow("final", finalImg)
         outStr = ""
-        # if the point is on the right, turn right
+        # if the point is on the left, turn right
         if xAvg > width / 2:
-            outStr += " turn left " + "{:2.2}".format(str(
+            outStr += " turn right " + "{:2.2}".format(str(
                 (xAvg - width / 2) / (width / 2) * 100 / 2
             )) + "%"
         # otherwise, turn left
         else:
-            outStr += " turn right " + "{:2.2}".format(str(
+            outStr += " turn left " + "{:2.2}".format(str(
                 (width / 2 - xAvg) / (width / 2) * 100 / 2
             )) + "%"
 
-        # if the point is on the right
+        # if the point is too high, look down
         if yAvg > height / 2:
-            outStr += " look up " + "{:2.2}".format(str(
+            outStr += " look down " + "{:2.2}".format(str(
                 (yAvg - height / 2) / (height / 2) * 100 / 2
             )) + "%"
         else:
-            outStr += " look down " + "{:2.2}".format(str(
+            outStr += " look up " + "{:2.2}".format(str(
                 (height / 2 - yAvg) / (height / 2) * 100 / 2
             )) + "%"
 
