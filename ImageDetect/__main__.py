@@ -1,5 +1,6 @@
 from __future__ import division
 import cv2
+import time
 import sys
 import numpy as np
 import imutils
@@ -44,8 +45,8 @@ cv2.createTrackbar('epsilon', 'sliders', 15, 20, nothing)
 cv2.createTrackbar('minArea%', 'sliders', 0, 50, nothing)
 
 # image debug levels
-# 2 = all, 1 = reduced, 0 = only final
-cv2.createTrackbar('imgDebugLevels', 'sliders', 0, 2, nothing)
+# 3 = all, 2 = some, 1 = reduced, 0 = only final
+cv2.createTrackbar('imgDebugLevels', 'sliders', 0, 3, nothing)
 
 cv2.createTrackbar('numVertices', 'sliders', numVertices, 20, nothing)
 
@@ -97,7 +98,7 @@ while True:
 
         numVertices = cv2.getTrackbarPos('numVertices', 'sliders')
 
-        if imgDebugLevels > -1:
+        if imgDebugLevels > 0:
             # Show the original image.
             imshow('frame', frame)
 
@@ -109,7 +110,7 @@ while True:
         frameBGR = cv2.filter2D(frameBGR, -1, kernal)"""
 
         # Show blurred image.
-        if imgDebugLevels > 0:
+        if imgDebugLevels > 1:
             imshow('blurred', frameBGR)
 
         # HSV (Hue, Saturation, Value).
@@ -121,7 +122,7 @@ while True:
         colorHigh = np.array([highHue,highSat,highVal])
         mask = cv2.inRange(hsv, colorLow, colorHigh)
         # Show the first mask
-        if imgDebugLevels > 1:
+        if imgDebugLevels > 2:
             imshow('mask-plain', mask)
 
         # i have no clue what this does
@@ -131,19 +132,19 @@ while True:
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernal)
 
         # Show morphological transformation mask
-        if imgDebugLevels > 1:
+        if imgDebugLevels > 2:
             imshow('mask', mask)
 
         # Put mask over top of the original image.
         result = cv2.bitwise_and(frame, frame, mask = mask)
 
         # Show final output image
-        if imgDebugLevels > 0:
+        if imgDebugLevels > 1:
             imshow('colorTest', result)
 
         _,threshd = cv2.threshold(result, threshold, 255, cv2.THRESH_BINARY)
 
-        if imgDebugLevels > 1:
+        if imgDebugLevels > 2:
             imshow('threshold', threshd)
 
         # convert to grayscale
@@ -157,7 +158,7 @@ while True:
         edged = cv2.Canny(gray, 30, 200)
 
         # and display them
-        if imgDebugLevels > 0:
+        if imgDebugLevels > 1:
             imshow('edged', threshd)
 
         # find contours
@@ -220,7 +221,7 @@ while True:
             cv2.drawContours(matchClone, contours, -1, (0, 255, 0), 3)
             cv2.putText(matchClone, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-            if imgDebugLevels > 0:
+            if imgDebugLevels > 1:
                 imshow("contours with " + str(numVertices) + " on black background" if limited else "contours on a black background", matchClone)
 
             # on og image
@@ -229,7 +230,7 @@ while True:
             cv2.drawContours(clonedResult, contours, -1, (0, 255, 0), 3)
             cv2.putText(clonedResult, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-            if imgDebugLevels > -1:
+            if imgDebugLevels > 0:
                 imshow("contours with " + str(numVertices) + " on og image" if limited else "contours on og image", clonedResult)
 
         displayContours(foundMatchingContours, True)
@@ -272,7 +273,7 @@ while True:
 
 
             cv2.putText(finalImg, "found " + str(contoursAndData[0]["num"]) + " contours", (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-            if imgDebugLevels > -1:
+            if imgDebugLevels > 0:
                 imshow("final", finalImg)
             outStr = ""
             # if the point is on the left, turn right
@@ -314,7 +315,8 @@ while True:
             cv2.destroyWindow(title)
 
         lastWindows = windows
+        time.sleep(1)
 
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
-            break
+            sys.exit(0)
