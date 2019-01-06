@@ -9,7 +9,7 @@ def nothing(*arg):
 
 onlyOneContour = True
 epsilon = 0.015
-numVertices = 6
+numVertices = 10
 
 # for cube
 # icol = (27, 101, 5, 38, 249, 255)
@@ -44,7 +44,9 @@ cv2.createTrackbar('minArea%', 'sliders', 0, 50, nothing)
 
 # image debug levels
 # 2 = all, 1 = reduced, 0 = only final
-cv2.createTrackbar('imgDebugLevels', 'sliders', 2, 2, nothing)
+cv2.createTrackbar('imgDebugLevels', 'sliders', 0, 2, nothing)
+
+cv2.createTrackbar('numVertices', 'sliders', numVertices, 20, nothing)
 
 frame = cv2.imread('smallball.jpg')
 
@@ -84,6 +86,8 @@ while True:
     epsilon = cv2.getTrackbarPos('epsilon', 'sliders') / 1000
 
     imgDebugLevels = cv2.getTrackbarPos('imgDebugLevels', 'sliders')
+
+    numVertices = cv2.getTrackbarPos('numVertices', 'sliders')
 
     # Show the original image.
     imshow('frame', frame)
@@ -125,7 +129,8 @@ while True:
     result = cv2.bitwise_and(frame, frame, mask = mask)
 
     # Show final output image
-    imshow('colorTest', result)
+    if imgDebugLevels > 0:
+        imshow('colorTest', result)
 
     _,threshd = cv2.threshold(result, threshold, 255, cv2.THRESH_BINARY)
 
@@ -174,7 +179,7 @@ while True:
             break
 
         # if our approximated contour has numVertices points, then
-        if len(c) == numVertices:
+        if len(c) == numVertices or numVertices == 0:
             foundMatchingContours.append(c)
 
     # if we've enabling filtering to only one contour...
@@ -183,7 +188,7 @@ while True:
         contoursAndData = sorted(contoursAndData, key=lambda c: c["area"], reverse=True)
         # filter the biggest one
         foundAllContours = [contoursAndData[0]["contour"]]
-        if contoursAndData[0]["num"] == numVertices:
+        if contoursAndData[0]["num"] == numVertices or numVertices == 0:
             foundMatchingContours = foundAllContours
         else:
             foundMatchingContours = []
@@ -256,12 +261,32 @@ while True:
         )
 
 
-        # if the point is on the right
+        cv2.putText(finalImg, "found " + str(contoursAndData[0]["num"]) + " contours", (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        imshow("final", finalImg)
+        outStr = ""
+        # if the point is on the right, turn right
         if xAvg > width / 2:
-            print("turn left " + "{:12.4f}".format(str((xAvg - width / 2) / (width / 2) * 100)) + "%")
+            outStr += " turn left " + "{:2.2}".format(str(
+                (xAvg - width / 2) / (width / 2) * 100 / 2
+            )) + "%"
+        # otherwise, turn left
         else:
-            print("turn right " + "{:12.4}".format(str((width / 2 - xAvg) / (width / 2) * 100)) + "%")
+            outStr += " turn right " + "{:2.2}".format(str(
+                (width / 2 - xAvg) / (width / 2) * 100 / 2
+            )) + "%"
 
+        # if the point is on the right
+        if yAvg > height / 2:
+            outStr += " look up " + "{:2.2}".format(str(
+                (yAvg - height / 2) / (height / 2) * 100 / 2
+            )) + "%"
+        else:
+            outStr += " look down " + "{:2.2}".format(str(
+                (height / 2 - yAvg) / (height / 2) * 100 / 2
+            )) + "%"
+
+        print(outStr)
+        cv2.putText(finalImg, outStr, (0, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
         imshow("final", finalImg)
 
 
