@@ -97,8 +97,9 @@ while True:
 
         numVertices = cv2.getTrackbarPos('numVertices', 'sliders')
 
-        # Show the original image.
-        imshow('frame', frame)
+        if imgDebugLevels > -1:
+            # Show the original image.
+            imshow('frame', frame)
 
         # Blur methods available, comment or uncomment to try different blur methods.
         frameBGR = cv2.GaussianBlur(frame, (blurVal, blurVal), 0)
@@ -228,7 +229,8 @@ while True:
             cv2.drawContours(clonedResult, contours, -1, (0, 255, 0), 3)
             cv2.putText(clonedResult, str(len(contours)) + 'contour(s) found', (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
 
-            imshow("contours with " + str(numVertices) + " on og image" if limited else "contours on og image", clonedResult)
+            if imgDebugLevels > -1:
+                imshow("contours with " + str(numVertices) + " on og image" if limited else "contours on og image", clonedResult)
 
         displayContours(foundMatchingContours, True)
         displayContours(foundAllContours, False)
@@ -270,7 +272,8 @@ while True:
 
 
             cv2.putText(finalImg, "found " + str(contoursAndData[0]["num"]) + " contours", (0, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-            imshow("final", finalImg)
+            if imgDebugLevels > -1:
+                imshow("final", finalImg)
             outStr = ""
             # if the point is on the left, turn right
             if xAvg > width / 2:
