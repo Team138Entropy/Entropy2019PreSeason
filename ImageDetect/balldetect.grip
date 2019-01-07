@@ -1,0 +1,94 @@
+<grip:Pipeline>
+  <sources>
+    <grip:Camera>
+      <property name="deviceNumber" value="0"/>
+    </grip:Camera>
+    <grip:MultiImageFile>
+      <property name="path[9]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/1.jpg"/>
+      <property name="path[10]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/0.jpg"/>
+      <property name="path[6]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/3.jpg"/>
+      <property name="path[3]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/6.jpg"/>
+      <property name="path[0]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/9.jpg"/>
+      <property name="path[8]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/10.jpg"/>
+      <property name="index" value="8"/>
+      <property name="numImages" value="11"/>
+      <property name="path[5]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/4.jpg"/>
+      <property name="path[2]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/7.jpg"/>
+      <property name="path[7]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/2.jpg"/>
+      <property name="path[4]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/5.jpg"/>
+      <property name="path[1]" value="/home/max/Documents/Entropy2019PreSeason/ImageDetect/ball/8.jpg"/>
+    </grip:MultiImageFile>
+  </sources>
+  <steps>
+    <grip:Step name="Blur">
+      <grip:Input step="0" socket="0"/>
+      <grip:Input step="0" socket="1">
+        <value>GAUSSIAN</value>
+      </grip:Input>
+      <grip:Input step="0" socket="2">
+        <value>9.90990990990991</value>
+      </grip:Input>
+      <grip:Output step="0" socket="0" previewed="true"/>
+    </grip:Step>
+    <grip:Step name="HSV Threshold">
+      <grip:Input step="1" socket="0"/>
+      <grip:Input step="1" socket="1">
+        <value>
+          <double>22.66007086840257</double>
+          <double>48.407649376054906</double>
+        </value>
+      </grip:Input>
+      <grip:Input step="1" socket="2">
+        <value>
+          <double>110.07194244604317</double>
+          <double>255.0</double>
+        </value>
+      </grip:Input>
+      <grip:Input step="1" socket="3">
+        <value>
+          <double>105.48561151079136</double>
+          <double>255.0</double>
+        </value>
+      </grip:Input>
+      <grip:Output step="1" socket="0" previewed="true"/>
+    </grip:Step>
+    <grip:Step name="Find Contours">
+      <grip:Input step="2" socket="0"/>
+      <grip:Input step="2" socket="1">
+        <value>false</value>
+      </grip:Input>
+      <grip:Output step="2" socket="0" previewed="true"/>
+    </grip:Step>
+  </steps>
+  <connections>
+    <grip:Connection>
+      <grip:Output step="1" socket="0" previewed="true"/>
+      <grip:Input step="2" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output source="1" socket="0" previewed="true"/>
+      <grip:Input step="0" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Input step="1" socket="0"/>
+    </grip:Connection>
+  </connections>
+  <settings>
+    <teamNumber>0</teamNumber>
+    <publishAddress>roboRIO-0-FRC.local</publishAddress>
+    <deployAddress>roboRIO-0-FRC.local</deployAddress>
+    <deployDir>/home/lvuser</deployDir>
+    <deployUser>lvuser</deployUser>
+    <deployJavaHome>/usr/local/frc/JRE/</deployJavaHome>
+    <deployJvmOptions>-Xmx50m -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:MaxNewSize=16m</deployJvmOptions>
+  </settings>
+  <codeGenerationSettings>
+    <language>Java</language>
+    <className>GripPipeline</className>
+    <implementWpilibPipeline>false</implementWpilibPipeline>
+    <saveDir>/home/max/GRIP</saveDir>
+    <packageName></packageName>
+    <moduleName>grip</moduleName>
+  </codeGenerationSettings>
+</grip:Pipeline>
