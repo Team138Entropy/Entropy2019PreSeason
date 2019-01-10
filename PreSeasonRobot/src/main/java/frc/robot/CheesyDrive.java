@@ -8,6 +8,7 @@ package frc.robot;
  */
 public class CheesyDrive {
 
+    // Note: These two aren't used right now
     private static final double kThrottleDeadband = 0.02;
     private static final double kWheelDeadband = 0.02;
 
