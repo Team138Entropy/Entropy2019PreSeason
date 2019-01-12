@@ -68,6 +68,7 @@ public final class OI {
     
     // Driver Stick
     static Button winchButton 		= new JoystickButton(driverStick, xboxA);
+	static Button xboxMenuButton = new JoystickButton(driverStick,xboxMenu);
     
     // Operator Stick
     static Button elevateToAcquireButton = new JoystickButton(operatorStick, nykoButton1);
@@ -82,7 +83,7 @@ public final class OI {
     static Button alternateElevatorTargetButton = new JoystickButton(operatorStick, nykoButton3);
     static Button toggleGrasperButton = new JoystickButton(operatorStick, nykoMiddle9);
     static Button toggleRollersButton = new JoystickButton(operatorStick, nykoMiddle10);
-    static Button toggleToClimb = new JoystickButton(operatorStick,nykoLeftStick);
+	static Button toggleToClimb = new JoystickButton(operatorStick,nykoLeftStick);
 //    static Button simulateDetectCubeButton = new JoystickButton(operatorStick, nykoMiddle9);
 //    static Button simulateAcquireCubeButton = new JoystickButton(operatorStick, nykoMiddle10);
     
@@ -91,7 +92,8 @@ public final class OI {
     
     public OI(){
     	//Driver Stick
-    	winchButton.whileHeld(new ControlWinch());
+		winchButton.whileHeld(new ControlWinch());
+		xboxMenuButton.whileHeld(new Vibrate());
     	
     	//Operator Stick
     	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
@@ -99,7 +101,8 @@ public final class OI {
     	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
     	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
     	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
-    	homeElevatorButton.whileHeld(new HomeElevator());
+		homeElevatorButton.whileHeld(new HomeElevator());
+		
 
     	readyToAcquireButton.whenPressed(new ReadyToAcquire());
     	
