@@ -8,8 +8,15 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 //import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team138.robot.subsystems.*;
-import org.usfirst.frc.team138.robot.commands.*;
+// import org.usfirst.frc.team138.robot.subsystems.*;
+import org.usfirst.frc.team138.robot.subsystems.BaseSubsystem;
+import org.usfirst.frc.team138.robot.subsystems.Drivetrain;
+// import org.usfirst.frc.team138.robot.commands.*;
+// import org.usfirst.frc.team138.robot.commands.AutonomousCommand;
+import org.usfirst.frc.team138.robot.commands.BaseCommand;
+import org.usfirst.frc.team138.robot.commands.TeleopDrive;
+import org.usfirst.frc.team138.robot.commands.Vibrate;
+import org.usfirst.frc.team138.robot.commands.Wait;
 
 //import edu.wpi.first.wpilibj.Preferences;
 
@@ -29,11 +36,11 @@ public class Robot extends IterativeRobot {
     SendableChooser<String> debugModeChooser;
         
     // Subsystems
-    public static final Compressor compressor = new Compressor();
+    // public static final Compressor compressor = new Compressor();
     public static final Drivetrain drivetrain = new Drivetrain();
-    public static final Grasper grasper = new Grasper();
-    public static final Elevator elevator = new Elevator();
-    public static final Climber climber = new Climber();
+    // public static final Grasper grasper = new Grasper();
+    // public static final Elevator elevator = new Elevator();
+    // public static final Climber climber = new Climber();
     public static double accumulatedHeading = 0.0; // Accumulate heading angle (target)
 
     public static final OI oi = new OI();
@@ -44,7 +51,7 @@ public class Robot extends IterativeRobot {
     public static AutoLocations autoLocations;
 	
     // Commands
-    AutonomousCommand autonomousCommand;
+    // AutonomousCommand autonomousCommand;
     
     // Global constants
     public static String mode; // "auto" or "teleop"
@@ -56,10 +63,10 @@ public class Robot extends IterativeRobot {
      */
     public void robotInit() {
     	drivetrain.DriveTrainInit();
-    	compressor.start();
+    	// compressor.start();
 		Sensors.initialize();
-		grasper.initialize();
-		elevator.ElevatorInit();
+		// grasper.initialize();
+		// elevator.ElevatorInit();
 
 		// Smart Dashboard Initialization
 		Sensors.updateSmartDashboard();
@@ -108,10 +115,10 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 	}
 	
-	private double getWheelAngle() {
-		double wheelAngle = (AutoDrive.rightDistance() - AutoDrive.leftDistance()) / Constants.driveWheelSpacing;
-		return wheelAngle * (180 / Math.PI);
-	}
+	// private double getWheelAngle() {
+		// double wheelAngle = (AutoDrive.rightDistance() - AutoDrive.leftDistance()) / Constants.driveWheelSpacing;
+		// return wheelAngle * (180 / Math.PI);
+	// }
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
@@ -147,17 +154,17 @@ public class Robot extends IterativeRobot {
     	   	
     	autoLocations = new AutoLocations(startPosChooser.getSelected());
     	
-        autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
-        		startPosChooser.getSelected(),
-        		autoModeChooser.getSelected(),
-        		gameData);
+        // autonomousCommand = new AutonomousCommand(teamChooser.getSelected(), 
+        		// startPosChooser.getSelected(),
+        		// autoModeChooser.getSelected(),
+        		// gameData);
 
         
         Sensors.gyro.reset();
         Sensors.resetEncoders();
         // Force wrist and gripper to known state
-       	Robot.grasper.InitializeForAuto();
-    	autonomousCommand.start();
+       	// Robot.grasper.InitializeForAuto();
+    	// autonomousCommand.start();
 		Constants.IntegralError=0;
     }
 
@@ -167,18 +174,18 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
         Sensors.updateSmartDashboard();
-        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+        // SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
         SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
     }
 
     public void teleopInit() {
     	mode = "teleop";
-        if (autonomousCommand != null) {
-        	autonomousCommand.cancel();        	
-        }        
+        // if (autonomousCommand != null) {
+        	// autonomousCommand.cancel();        	
+        // }        
     //	Sensors.resetEncoders();
         Sensors.gyro.reset();
-    	elevator.StopMoving();
+    	// elevator.StopMoving();
         Robot.accumulatedHeading = 0;
 		Robot.drivetrain.Relax();
 
@@ -203,11 +210,11 @@ public class Robot extends IterativeRobot {
         //if (debugModeChooser.getSelected() == "debug") 
         //{
 	        Sensors.updateSmartDashboard();
-	        elevator.updateSmartDashboard();
-	        climber.updateSmartDashboard();
-	        grasper.updateSmartDashboard();
+	        // elevator.updateSmartDashboard();
+	        // climber.updateSmartDashboard();
+	        // grasper.updateSmartDashboard();
 	        
-	        SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
+	        // SmartDashboard.putNumber("Wheel Angle", getWheelAngle());
 	        SmartDashboard.putNumber("Scaled Auto Speed", Constants.AutoStraighLineSpeedFactor * Constants.AutoDriveSpeed);
         //}
     }

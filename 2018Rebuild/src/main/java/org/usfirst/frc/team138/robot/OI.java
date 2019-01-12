@@ -4,8 +4,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 //import edu.wpi.first.wpilibj.command.Command;
-import org.usfirst.frc.team138.robot.commands.*;
-import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
+// import org.usfirst.frc.team138.robot.commands.*;
+import org.usfirst.frc.team138.robot.commands.BaseCommand;
+import org.usfirst.frc.team138.robot.commands.TeleopDrive;
+import org.usfirst.frc.team138.robot.commands.Vibrate;
+import org.usfirst.frc.team138.robot.commands.Wait;
+// import org.usfirst.frc.team138.robot.commands.ControlWinch;
+
+// import org.usfirst.frc.team138.robot.subsystems.Elevator.ElevatorTarget;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -92,29 +98,29 @@ public final class OI {
     
     public OI(){
     	//Driver Stick
-		winchButton.whileHeld(new ControlWinch());
-		xboxMenuButton.whileHeld(new Vibrate());
+		// winchButton.whileHeld(new ControlWinch());
+		xboxMenuButton.whileHeld(new Vibrate(driverStick));
     	
     	//Operator Stick
-    	elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
-    	elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.SWITCH));
-    	elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
-    	alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
-    	cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
-		homeElevatorButton.whileHeld(new HomeElevator());
+    	// elevateToAcquireButton.whenPressed(new ElevateToTarget(ElevatorTarget.ACQUIRE));
+    	// elevateToSwitchButton.whenPressed(new ElevateToTarget(ElevatorTarget.SWITCH));
+    	// elevateToScaleButton.whenPressed(new ElevateToTarget(ElevatorTarget.LOWER_SCALE));
+    	// alternateElevatorTargetButton.whenPressed(new ElevateToAlternateTarget());
+    	// cancelElevatorMoveButton.whenPressed(new CancelElevatorMove());
+		// homeElevatorButton.whileHeld(new HomeElevator());
 		
 
-    	readyToAcquireButton.whenPressed(new ReadyToAcquire());
+    	// readyToAcquireButton.whenPressed(new ReadyToAcquire());
     	
-    	acquireButton.whenPressed(new StartAcquire());
-    	acquireButton.whenReleased(new CompleteAcquire());
-    	releaseButton.whenPressed(new StartRelease());
-    	releaseButton.whenReleased(new CompleteRelease());
+    	// acquireButton.whenPressed(new StartAcquire());
+    	// acquireButton.whenReleased(new CompleteAcquire());
+    	// releaseButton.whenPressed(new StartRelease());
+    	// releaseButton.whenReleased(new CompleteRelease());
     	
-    	toggleWristButton.whenPressed(new ToggleWrist());
-    	toggleGrasperButton.whenPressed(new ToggleGrasper());
-    	toggleRollersButton.whenPressed(new ToggleRollers());
-    	toggleToClimb.whenPressed(new PrepareToClimb());
+    	// toggleWristButton.whenPressed(new ToggleWrist());
+    	// toggleGrasperButton.whenPressed(new ToggleGrasper());
+    	// toggleRollersButton.whenPressed(new ToggleRollers());
+    	// toggleToClimb.whenPressed(new PrepareToClimb());
     	
     	
     	//simulateDetectCubeButton.whenPressed(new SimulateDetectCube());

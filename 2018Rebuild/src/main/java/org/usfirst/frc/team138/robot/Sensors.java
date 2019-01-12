@@ -68,8 +68,8 @@ public class Sensors {
 	public static void updateSmartDashboard(){
 		SmartDashboard.putNumber("Left Pos(M)", getLeftDistance());
 		SmartDashboard.putNumber("Right Pos(M)", getRightDistance());
-		SmartDashboard.putNumber("Elev Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
-		SmartDashboard.putNumber("Elev Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
+		// SmartDashboard.putNumber("Elev Position", Robot.elevator._elevatorMotor.getSelectedSensorPosition(0));     
+		// SmartDashboard.putNumber("Elev Velocity", Robot.elevator._elevatorMotor.getSelectedSensorVelocity(0));
 		
 		SmartDashboard.putNumber("Target Heading", Robot.accumulatedHeading);		
 		SmartDashboard.putNumber("Robot Heading", gyro.getAngle());

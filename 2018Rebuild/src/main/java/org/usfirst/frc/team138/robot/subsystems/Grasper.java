@@ -2,7 +2,7 @@ package org.usfirst.frc.team138.robot.subsystems;
 
 import org.usfirst.frc.team138.robot.Constants;
 import org.usfirst.frc.team138.robot.RobotMap;
-import org.usfirst.frc.team138.robot.commands.AutoAcquire;
+// import org.usfirst.frc.team138.robot.commands.AutoAcquire;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
